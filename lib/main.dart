@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:innovation/providers/login_page_provider.dart';
 
-import 'package:innovation/views/splash_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+
+import 'package:innovation/views/screens/splash_page.dart';
+import 'package:innovation/providers/login_page_provider.dart';
 
 void main() async {
   // initialize firebase
@@ -20,13 +21,17 @@ void main() async {
         ))
       : await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  // for onboading screen
+  final prefs = await SharedPreferences.getInstance();
+  final bool isFirstTime = prefs.getBool('showHome') ?? true;
+
+  runApp(MyApp(isFirstTime: isFirstTime));
 }
 
-class DefaultFirebaseOptions {}
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.isFirstTime});
+
+  final bool isFirstTime;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +41,9 @@ class MyApp extends StatelessWidget {
           create: (context) => LoginProvider(),
         ),
       ],
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
-      ),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: SplashScreen(isFirstTime: isFirstTime)),
     );
   }
 }

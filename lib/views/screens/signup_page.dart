@@ -1,37 +1,34 @@
 import 'dart:async';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
+
 import 'package:innovation/components/button.dart';
-import 'package:innovation/components/rounded_button.dart';
 import 'package:innovation/components/text_field.dart';
 import 'package:innovation/controllers/auth_controller.dart';
 import 'package:innovation/providers/login_page_provider.dart';
-import 'package:innovation/views/home_page.dart';
-import 'package:innovation/views/signup_page.dart';
+import 'package:innovation/views/screens/home_page.dart';
+import 'package:innovation/views/screens/login_page.dart';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage>
+class _RegisterPageState extends State<RegisterPage>
     with SingleTickerProviderStateMixin {
   RoundedLoadingButtonController rlc = RoundedLoadingButtonController();
-
-  // controllers
   late AnimationController _controller;
   late Animation<double> _anim;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  // sweep animation
   @override
   void initState() {
     _controller = AnimationController(
@@ -42,19 +39,18 @@ class _LoginPageState extends State<LoginPage>
     super.initState();
   }
 
-  // clear the chunks
   @override
   void dispose() {
     _controller.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) => Scaffold(
@@ -69,7 +65,6 @@ class _LoginPageState extends State<LoginPage>
                 padding: const EdgeInsets.symmetric(horizontal: 14.0),
                 child: Row(
                   children: [
-                    // brand logo
                     const Icon(
                       Icons.all_inclusive_outlined,
                       size: 80,
@@ -77,7 +72,6 @@ class _LoginPageState extends State<LoginPage>
                     const SizedBox(
                       width: 10,
                     ),
-                    // animation
                     Column(
                       children: [
                         AnimatedTextKit(
@@ -89,7 +83,6 @@ class _LoginPageState extends State<LoginPage>
                                 speed: const Duration(milliseconds: 100)),
                           ],
                         ),
-                        // brand slogan
                         const Text(
                           "A Creative Social App",
                           style: TextStyle(
@@ -101,7 +94,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 50,
               ),
 
               // email field
@@ -121,22 +114,31 @@ class _LoginPageState extends State<LoginPage>
                   isObscure: true),
 
               const SizedBox(
+                height: 20,
+              ),
+
+              // password field
+              TextFieldBox(
+                  controller: _confirmPasswordController,
+                  hintText: "Confirm Password",
+                  isObscure: true),
+
+              const SizedBox(
                 height: 35,
               ),
 
-              //login button
+              // button
               Consumer<LoginProvider>(
                 builder: (context, value, child) => Button(
-                    text: "LOG IN",
-                    rlc: value.getLoginCont,
+                    text: "REGISTER",
+                    rlc: value.getRegisterCont,
                     onPressed: () async {
-                      bool signedIn = await Auth().loginUser(
+                      bool signedIn = await Auth().signupUser(
                           _emailController.text,
                           _passwordController.text,
                           context);
-
                       if (signedIn) {
-                        value.setSucessLogin();
+                        value.setSucessRegister();
                         Timer(
                             const Duration(milliseconds: 800),
                             () => Navigator.pushReplacement(
@@ -145,7 +147,7 @@ class _LoginPageState extends State<LoginPage>
                                   builder: (context) => const HomePage(),
                                 )));
                       } else {
-                        value.resetLogin();
+                        value.resetRegister();
                       }
                     }),
               ),
@@ -154,89 +156,24 @@ class _LoginPageState extends State<LoginPage>
                 height: 40,
               ),
 
-              // alternate login options
-              const Text("Or Login With",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
               const SizedBox(
-                height: 15,
+                height: 50,
               ),
-
-              Column(
-                children: [
-                  Consumer<LoginProvider>(
-                      builder: (context, value, child) => RoundedButton(
-                          rc: value.getGoogleCont,
-                          onPressed: () async {
-                            bool signedIn = await Auth().googleSignIn(context);
-
-                            if (signedIn) {
-                              value.setSucessGoogle();
-                              Timer(
-                                  const Duration(seconds: 1),
-                                  () => Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
-                                      )));
-                            } else {
-                              value.resetGoogle();
-                            }
-                          },
-                          fontWeight: FontWeight.w500,
-                          icon: FontAwesomeIcons.google,
-                          size: 15,
-                          text: "Sign in with Google")),
-
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  // facebook sign in button
-                  Consumer<LoginProvider>(
-                      builder: (context, value, child) => RoundedButton(
-                          onPressed: () async {
-                            bool signedIn =
-                                await Auth().facebookSignIn(context);
-
-                            if (signedIn) {
-                              value.setSucessFacebook();
-                              Timer(
-                                  const Duration(milliseconds: 800),
-                                  () => Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
-                                      )));
-                            } else {
-                              value.resetFacebook();
-                            }
-                          },
-                          rc: value.getFacebookCont,
-                          fontWeight: FontWeight.w500,
-                          icon: FontAwesomeIcons.facebook,
-                          size: 15,
-                          text: "Sign in with Facebook")),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-
               // send to register page
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? ",
+                  const Text("Already have an account? ",
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
                   InkWell(
                     onTap: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
+                          builder: (context) => const LoginPage(),
                         )),
                     child: const Text(
-                      "Register",
+                      "Login",
                       style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.w600,

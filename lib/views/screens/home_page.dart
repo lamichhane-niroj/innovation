@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:innovation/components/button.dart';
 import 'package:innovation/controllers/auth_controller.dart';
-import 'package:innovation/views/login_page.dart';
+import 'package:innovation/views/screens/login_page.dart';
+
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,9 +24,7 @@ class _HomePageState extends State<HomePage> {
             text: "Log Out",
             onPressed: () {
               Auth.gauth.signOut();
-
               Auth.fauth.signOut();
-
               Auth.faceauth.logOut();
 
               Navigator.of(context).pushReplacement(MaterialPageRoute(
