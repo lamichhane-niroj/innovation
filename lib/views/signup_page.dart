@@ -1,8 +1,15 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:innovation/components/button.dart';
 import 'package:innovation/components/text_field.dart';
+import 'package:innovation/controllers/auth_controller.dart';
+import 'package:innovation/providers/login_page_provider.dart';
+import 'package:innovation/views/home_page.dart';
 import 'package:innovation/views/login_page.dart';
+import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +20,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage>
     with SingleTickerProviderStateMixin {
+  RoundedLoadingButtonController rlc = RoundedLoadingButtonController();
   late AnimationController _controller;
   late Animation<double> _anim;
   final TextEditingController _emailController = TextEditingController();
@@ -22,8 +30,8 @@ class _RegisterPageState extends State<RegisterPage>
 
   @override
   void initState() {
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(seconds: 1, milliseconds: 500));
     _anim = Tween(begin: -1.0, end: 0.0).animate(
         CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
     _controller.forward();
@@ -119,7 +127,29 @@ class _RegisterPageState extends State<RegisterPage>
               ),
 
               // button
-              const Button(text: "REGISTER"),
+              Consumer<LoginProvider>(
+                builder: (context, value, child) => Button(
+                    text: "REGISTER",
+                    rlc: value.getRegisterCont,
+                    onPressed: () async {
+                      bool signedIn = await Auth().signupUser(
+                          _emailController.text,
+                          _passwordController.text,
+                          context);
+                      if (signedIn) {
+                        value.setSucessRegister();
+                        Timer(
+                            const Duration(milliseconds: 800),
+                            () => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomePage(),
+                                )));
+                      } else {
+                        value.resetRegister();
+                      }
+                    }),
+              ),
 
               const SizedBox(
                 height: 40,

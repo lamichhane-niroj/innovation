@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "775059173277",
+    "project_id": "innovation-f9b56",
+    "storage_bucket": "innovation-f9b56.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775059173277:android:a9c7f91a7d368d084a8974",
+        "android_client_info": {
+          "package_name": "com.example.innovation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "775059173277-soqdu6h3vieulnvi2kpat03ggcjaoemp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.innovation",
+            "certificate_hash": "429d0a7e0d36058ff9130421c8769fd87f93789c"
+          }
+        },
+        {
+          "client_id": "775059173277-co5t34aus3hl8mkld4a1j29fkpdfttnd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8UZrwLwCc-FfALbekyuSYyiLDNTNrrdc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775059173277-co5t34aus3hl8mkld4a1j29fkpdfttnd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

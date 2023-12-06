@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+    <string name="app_name">Innovation</string>
+    <string name="facebook_app_id">296014043437229</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">def4091f3acd2428da4aadfc108f31c0</string>
+
+</resource>
